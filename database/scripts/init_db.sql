@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -6,7 +6,7 @@ CREATE TABLE users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE exercises (
+CREATE TABLE IF NOT EXISTS exercises (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -14,7 +14,7 @@ CREATE TABLE exercises (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE workouts (
+CREATE TABLE IF NOT EXISTS workouts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     date DATE NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE workouts (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE workout_sets (
+CREATE TABLE IF NOT EXISTS workout_sets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     workout_id INT NOT NULL,
     exercise_id INT NOT NULL,
