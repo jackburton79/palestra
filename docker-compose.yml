@@ -1,5 +1,16 @@
 version: "3.2"
 services:
+    webserver:
+        container_name: gym_addressbook
+        image: gym_addressbook
+        build:
+            context: .
+        restart: always
+        ports:
+            - "127.0.0.1:8380:80"
+        networks:
+          gymnet:
+            ipv4_address: 172.23.1.2
     database:
         container_name: gym_database
         image: mariadb
