@@ -2,11 +2,14 @@
 // Simple REST API for Gym Tracker
 header('Content-Type: application/json');
 
-require(config.php)
+require('config.php');
 // DB CONFIG
 
-$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
-if ($mysqli->connect_errno) {
+try {
+    $pdo = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    ]);
+} catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed']);
     exit;
@@ -31,17 +34,19 @@ if ($path[0] === 'users') {
     if ($method === 'POST') {
         // Create user
         $data = get_input();
-        $stmt = $mysqli->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $data['username'], $data['email'], password_hash($data['password'], PASSWORD_DEFAULT));
-        $stmt->execute();
-        respond(['id' => $stmt->insert_id], 201);
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
+        $stmt->execute([
+            ':username' => $data['username'],
+            ':email' => $data['email'],
+            ':password_hash' => password_hash($data['password'], PASSWORD_DEFAULT)
+        ]);
+        respond(['id' => $pdo->lastInsertId()], 201);
     }
     if ($method === 'GET' && isset($path[1])) {
         // Get user
-        $stmt = $mysqli->prepare("SELECT id, username, email, created_at FROM users WHERE id = ?");
-        $stmt->bind_param("i", $path[1]);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
+        $stmt = $pdo->prepare("SELECT id, username, email, created_at FROM users WHERE id = :id");
+        $stmt->execute([':id' => $path[1]]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
     }
 }
@@ -49,14 +54,18 @@ if ($path[0] === 'users') {
 if ($path[0] === 'exercises') {
     if ($method === 'POST') {
         $data = get_input();
-        $stmt = $mysqli->prepare("INSERT INTO exercises (name, description, category) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $data['name'], $data['description'], $data['category']);
-        $stmt->execute();
-        respond(['id' => $stmt->insert_id], 201);
+        $stmt = $pdo->prepare("INSERT INTO exercises (name, description, category) VALUES (:name, :description, :category)");
+        $stmt->execute([
+            ':name' => $data['name'],
+            ':description' => $data['description'],
+            ':category' => $data['category']
+        ]);
+        respond(['id' => $pdo->lastInsertId()], 201);
     }
     if ($method === 'GET') {
         // List all
-        $result = $mysqli->query("SELECT * FROM exercises")->fetch_all(MYSQLI_ASSOC);
+        $stmt = $pdo->query("SELECT * FROM exercises");
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         respond($result);
     }
 }
@@ -64,16 +73,18 @@ if ($path[0] === 'exercises') {
 if ($path[0] === 'workouts') {
     if ($method === 'POST') {
         $data = get_input();
-        $stmt = $mysqli->prepare("INSERT INTO workouts (user_id, date, notes) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $data['user_id'], $data['date'], $data['notes']);
-        $stmt->execute();
-        respond(['id' => $stmt->insert_id], 201);
+        $stmt = $pdo->prepare("INSERT INTO workouts (user_id, date, notes) VALUES (:user_id, :date, :notes)");
+        $stmt->execute([
+            ':user_id' => $data['user_id'],
+            ':date' => $data['date'],
+            ':notes' => $data['notes']
+        ]);
+        respond(['id' => $pdo->lastInsertId()], 201);
     }
     if ($method === 'GET' && isset($path[1])) {
-        $stmt = $mysqli->prepare("SELECT * FROM workouts WHERE id = ?");
-        $stmt->bind_param("i", $path[1]);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
+        $stmt = $pdo->prepare("SELECT * FROM workouts WHERE id = :id");
+        $stmt->execute([':id' => $path[1]]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         respond($result ?: ['error' => 'Workout not found'], $result ? 200 : 404);
     }
 }
@@ -81,16 +92,20 @@ if ($path[0] === 'workouts') {
 if ($path[0] === 'workout_sets') {
     if ($method === 'POST') {
         $data = get_input();
-        $stmt = $mysqli->prepare("INSERT INTO workout_sets (workout_id, exercise_id, set_number, weight, repetitions) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iiidi", $data['workout_id'], $data['exercise_id'], $data['set_number'], $data['weight'], $data['repetitions']);
-        $stmt->execute();
-        respond(['id' => $stmt->insert_id], 201);
+        $stmt = $pdo->prepare("INSERT INTO workout_sets (workout_id, exercise_id, set_number, weight, repetitions) VALUES (:workout_id, :exercise_id, :set_number, :weight, :repetitions)");
+        $stmt->execute([
+            ':workout_id' => $data['workout_id'],
+            ':exercise_id' => $data['exercise_id'],
+            ':set_number' => $data['set_number'],
+            ':weight' => $data['weight'],
+            ':repetitions' => $data['repetitions']
+        ]);
+        respond(['id' => $pdo->lastInsertId()], 201);
     }
     if ($method === 'GET' && isset($path[1])) {
-        $stmt = $mysqli->prepare("SELECT * FROM workout_sets WHERE workout_id = ?");
-        $stmt->bind_param("i", $path[1]);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt = $pdo->prepare("SELECT * FROM workout_sets WHERE workout_id = :workout_id");
+        $stmt->execute([':workout_id' => $path[1]]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         respond($result);
     }
 }
