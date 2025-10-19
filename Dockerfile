@@ -8,13 +8,9 @@ RUN locale-gen it_IT.UTF-8
 ENV LANG POSIX
 ENV LC_CTYPE it_IT.UTF-8
 RUN apt-get update && \
-    docker-php-ext-install pdo && \	
-    apt-get update && \
+	docker-php-ext-install pdo && \	
+	docker-php-ext-install mysqli
 
-#RUN pecl install sqlsrv pdo_sqlsrv
-#RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
-COPY ./htdocs /var/www/html/
-#COPY ./ATERUD-RootCA.cer /usr/local/share/ca-certificates/ATERUD-RootCA.crt
-#RUN update-ca-certificates
+COPY ./server /var/www/html/
 
 EXPOSE 80/tcp
