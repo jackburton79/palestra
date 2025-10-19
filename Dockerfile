@@ -8,8 +8,7 @@ RUN locale-gen it_IT.UTF-8
 ENV LANG POSIX
 ENV LC_CTYPE it_IT.UTF-8
 RUN apt-get update && \
-	docker-php-ext-install pdo && \	
-	docker-php-ext-install mysqli
+	docker-php-ext-install pdo pdo_mysql	
 
 COPY ./server /var/www/html/
 

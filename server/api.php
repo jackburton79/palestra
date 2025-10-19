@@ -2,12 +2,10 @@
 // Simple REST API for Gym Tracker
 header('Content-Type: application/json');
 
+require(config.php)
 // DB CONFIG
-$host = 'localhost';
-$db   = 'gym_tracker';
-$user = 'your_db_user';
-$pass = 'your_db_password';
-$mysqli = new mysqli($host, $user, $pass, $db);
+
+$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
 if ($mysqli->connect_errno) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed']);
