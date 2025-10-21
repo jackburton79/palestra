@@ -48,7 +48,8 @@ switch ($path[0]) {
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
             $stmt->bindParam(":username", $data['username'], PDO::PARAM_STR);
             $stmt->bindParam(":email", $data['email'], PDO::PARAM_STR);
-            $stmt->bindParam(":password_hash", password_hash($data['password'], PASSWORD_DEFAULT), PDO::PARAM_STR);
+            $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
+            $stmt->bindParam(":password_hash", $password_hash, PDO::PARAM_STR);
             $stmt->execute();
             respond(['id' => $pdo->lastInsertId()], 201);
         } else if ($method === 'GET') {
