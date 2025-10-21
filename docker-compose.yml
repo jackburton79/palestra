@@ -5,6 +5,11 @@ services:
         image: gym_server
         build:
             context: .
+            args:
+              db_name: gym
+              db_host: "database"
+              db_user: ${MYSQL_DB_USER}
+              db_password: ${MYSQL_DB_PASSWORD}
         restart: always
         ports:
           - 127.0.0.1:8380:80
