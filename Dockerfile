@@ -16,7 +16,7 @@ RUN apt-get update && \
 
 COPY ./server /var/www/html/
 
-RUN sed s/DUMMYUSER/${db_user}/ server/inc/config.php
-RUN sed s/DUMMYPASS/${db_password}/ server/inc/config.php
+RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/inc/config.php
+RUN sed -i s/DUMMYPASS/${db_password}/ /var/www/html/inc/config.php
 
 EXPOSE 80/tcp
