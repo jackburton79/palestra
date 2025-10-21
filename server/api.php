@@ -51,17 +51,19 @@ switch ($path[0]) {
             $stmt->bindParam(":password_hash", password_hash($data['password'], PASSWORD_DEFAULT), PDO::PARAM_STR);
             $stmt->execute();
             respond(['id' => $pdo->lastInsertId()], 201);
-        } else if ($method === 'GET' && isset($path[1])) {
-            // Get user
-            $stmt = $pdo->prepare("SELECT id, username, email, created_at FROM users WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
         } else if ($method === 'GET') {
-            // List all users
-            $stmt = $pdo->query("SELECT id, username, email, created_at FROM users");
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            respond($result);
+            if (isset($path[1]))) {
+                // Get user
+                $stmt = $pdo->prepare("SELECT id, username, email, created_at FROM users WHERE id = :id");
+                $stmt->execute([':id' => $path[1]]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
+            } else {
+                // List all users
+                $stmt = $pdo->query("SELECT id, username, email, created_at FROM users");
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                respond($result);
+            }
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
             // Update user
             $data = get_input();
@@ -104,17 +106,19 @@ switch ($path[0]) {
             $stmt->bindParam(":category", $data['category'], PDO::PARAM_STR);
             $stmt->execute();
             respond(['id' => $pdo->lastInsertId()], 201);
-        } else if ($method === 'GET' && isset($path[1])) {
-            // Get single exercise
-            $stmt = $pdo->prepare("SELECT * FROM exercises WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            respond($result ?: ['error' => 'Exercise not found'], $result ? 200 : 404);
         } else if ($method === 'GET') {
-            // List all
-            $stmt = $pdo->query("SELECT * FROM exercises");
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            respond($result);
+            if (isset($path[1])) {
+                // Get single exercise
+                $stmt = $pdo->prepare("SELECT * FROM exercises WHERE id = :id");
+                $stmt->execute([':id' => $path[1]]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                respond($result ?: ['error' => 'Exercise not found'], $result ? 200 : 404);
+            } else {
+                // List all
+                $stmt = $pdo->query("SELECT * FROM exercises");
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                respond($result);
+            }
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
             // Update exercise
             $data = get_input();
@@ -157,15 +161,17 @@ switch ($path[0]) {
             $stmt->bindParam(":notes", $data['notes'], PDO::PARAM_STR);
             $stmt->execute();
             respond(['id' => $pdo->lastInsertId()], 201);
-        } else if ($method === 'GET' && isset($path[1])) {
-            $stmt = $pdo->prepare("SELECT * FROM workouts WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            respond($result ?: ['error' => 'Workout not found'], $result ? 200 : 404);
         } else if ($method === 'GET') {
-            $stmt = $pdo->query("SELECT * FROM workouts");
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            respond($result);
+            if (isset($path[1])) {
+                $stmt = $pdo->prepare("SELECT * FROM workouts WHERE id = :id");
+                $stmt->execute([':id' => $path[1]]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                respond($result ?: ['error' => 'Workout not found'], $result ? 200 : 404);
+            } else {
+                $stmt = $pdo->query("SELECT * FROM workouts");
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                respond($result);
+            }
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
             // Update workout
             $data = get_input();
@@ -210,15 +216,17 @@ switch ($path[0]) {
             $stmt->bindParam(':repetitions', $data['repetitions'], PDO::PARAM_INT);
             $stmt->execute();
             respond(['id' => $pdo->lastInsertId()], 201);
-        } else if ($method === 'GET' && isset($path[1])) {
-            $stmt = $pdo->prepare("SELECT * FROM workout_sets WHERE workout_id = :workout_id");
-            $stmt->execute([':workout_id' => $path[1]]);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            respond($result);
         } else if ($method === 'GET') {
-            $stmt = $pdo->query("SELECT * FROM workout_sets");
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            respond($result);
+            if (isset($path[1])) {
+                $stmt = $pdo->prepare("SELECT * FROM workout_sets WHERE workout_id = :workout_id");
+                $stmt->execute([':workout_id' => $path[1]]);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                respond($result);
+            } else {
+                $stmt = $pdo->query("SELECT * FROM workout_sets");
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                respond($result);
+            }
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
             // Update set by id
             $data = get_input();
