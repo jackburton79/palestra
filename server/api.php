@@ -2,7 +2,8 @@
 // Simple REST API for Gym Tracker
 header('Content-Type: application/json');
 
-require('config.php');
+require("inc/config.php");
+
 // DB CONFIG
 
 try {
