@@ -53,7 +53,7 @@ switch ($path[0]) {
             $stmt->execute();
             respond(['id' => $pdo->lastInsertId()], 201);
         } else if ($method === 'GET') {
-            if (isset($path[1]))) {
+            if (isset($path[1])) {
                 // Get user
                 $stmt = $pdo->prepare("SELECT id, username, email, created_at FROM users WHERE id = :id");
                 $stmt->execute([':id' => $path[1]]);
@@ -84,8 +84,10 @@ switch ($path[0]) {
             }
             if ($fields) {
                 $stmt = $pdo->prepare("UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id");
-                $stmt->execute($params);
-                respond(['success' => true]);
+                if ($stmt->execute($params))
+                    respond(['success' => true]);
+                else
+                    respond(['error' => 'Invalide user'], 400);
             } else {
                 respond(['error' => 'No fields to update'], 400);
             }
@@ -139,8 +141,10 @@ switch ($path[0]) {
             }
             if ($fields) {
                 $stmt = $pdo->prepare("UPDATE exercises SET ".implode(', ', $fields)." WHERE id = :id");
-                $stmt->execute($params);
-                respond(['success' => true]);
+                if ($stmt->execute($params))
+                    respond(['success' => true]);
+                else
+                    respond(['error' => 'Invalid exercise'], 400);
             } else {
                 respond(['error' => 'No fields to update'], 400);
             }
@@ -193,7 +197,10 @@ switch ($path[0]) {
             if ($fields) {
                 $stmt = $pdo->prepare("UPDATE workouts SET ".implode(', ', $fields)." WHERE id = :id");
                 $stmt->execute($params);
-                respond(['success' => true]);
+                if ($stmt->execute($params))
+                    respond(['success' => true]);
+                else
+                     respond(['error' => 'Invalid user'], 400);
             } else {
                 respond(['error' => 'No fields to update'], 400);
             }
@@ -255,8 +262,10 @@ switch ($path[0]) {
             }
             if ($fields) {
                 $stmt = $pdo->prepare("UPDATE workout_sets SET ".implode(', ', $fields)." WHERE id = :id");
-                $stmt->execute($params);
-                respond(['success' => true]);
+                if ($stmt->execute($params))
+                    respond(['success' => true]);
+                else
+                    respond(['error' => 'Invalid workout'], 400);
             } else {
                 respond(['error' => 'No fields to update'], 400);
             }
