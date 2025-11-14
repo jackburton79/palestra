@@ -87,7 +87,7 @@ switch ($path[0]) {
                 if ($stmt->execute($params))
                     respond(['success' => true]);
                 else
-                    respond(['error' => 'Invalide user'], 400);
+                    respond(['error' => 'Invalid user'], 400);
             } else {
                 respond(['error' => 'No fields to update'], 400);
             }
