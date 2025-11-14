@@ -3,30 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Palestra — Users CRUD</title>
+  <title>Palestra — CRUD UI</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <main class="container">
-    <h1>Users — CRUD UI</h1>
+    <h1>Palestra — CRUD UI</h1>
     <p class="note">Default API base: <code>http://localhost:8380/api.php</code>. Edit js/config.js if different.</p>
 
+    <!-- USERS (existing) -->
     <section class="card">
       <h2>Create user</h2>
-      <form id="createForm" class="form-row">
+      <form id="createUserForm" class="form-row">
         <input id="createUsername" placeholder="Username" required />
         <input id="createEmail" type="email" placeholder="Email" required />
         <input id="createPassword" type="password" placeholder="Password" required />
         <button type="submit">Create</button>
-        <button id="createClear" type="button" class="secondary">Clear</button>
+        <button id="createUserClear" type="button" class="secondary">Clear</button>
       </form>
     </section>
 
     <section class="card">
       <h2>Users</h2>
       <div class="controls">
-        <button id="refreshBtn">Refresh</button>
-        <input id="filter" placeholder="Filter username or email" />
+        <button id="refreshUsersBtn">Refresh</button>
+        <input id="filterUsers" placeholder="Filter username or email" />
       </div>
       <table id="usersTable" class="striped">
         <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Created</th><th>Actions</th></tr></thead>
@@ -36,13 +37,49 @@
 
     <section class="card">
       <h2>Edit user</h2>
-      <form id="editForm" class="form-row">
-        <input id="editId" placeholder="ID" readonly />
+      <form id="editUserForm" class="form-row">
+        <input id="editUserId" placeholder="ID" readonly />
         <input id="editUsername" placeholder="Username" />
         <input id="editEmail" type="email" placeholder="Email" />
         <input id="editPassword" type="password" placeholder="New password (optional)" />
         <button type="submit">Save</button>
-        <button id="cancelEdit" type="button" class="secondary">Cancel</button>
+        <button id="cancelUserEdit" type="button" class="secondary">Cancel</button>
+      </form>
+    </section>
+
+    <!-- EXERCISES -->
+    <section class="card">
+      <h2>Create exercise</h2>
+      <form id="createExerciseForm" class="form-row">
+        <input id="exerciseName" placeholder="Name" required />
+        <input id="exerciseCategory" placeholder="Category" />
+        <input id="exerciseDescription" placeholder="Description" />
+        <button type="submit">Create</button>
+        <button id="clearExercise" type="button" class="secondary">Clear</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Exercises</h2>
+      <div class="controls">
+        <button id="refreshExercisesBtn">Refresh</button>
+        <input id="filterExercises" placeholder="Filter name or category" />
+      </div>
+      <table id="exercisesTable" class="striped">
+        <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Description</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Edit exercise</h2>
+      <form id="editExerciseForm" class="form-row">
+        <input id="editExerciseId" placeholder="ID" readonly />
+        <input id="editExerciseName" placeholder="Name" />
+        <input id="editExerciseCategory" placeholder="Category" />
+        <input id="editExerciseDescription" placeholder="Description" />
+        <button type="submit">Save</button>
+        <button id="cancelExerciseEdit" type="button" class="secondary">Cancel</button>
       </form>
     </section>
 
