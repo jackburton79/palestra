@@ -18,8 +18,8 @@ RUN apt-get update && \
 
 COPY ./server /var/www/html/
 COPY ./index.html /var/www/html/
-COPY ./css /var/www/html/
-COPY ./js /var/www/html/
+COPY ./css /var/www/html/css/
+COPY ./js /var/www/html/js/
 
 RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/inc/config.php
 RUN sed -i s/DUMMYPASS/${db_password}/ /var/www/html/inc/config.php
