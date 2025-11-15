@@ -109,14 +109,14 @@ createUserForm.addEventListener('submit', async (ev) => {
   try {
     const res = await api.createUser(payload);
     showMessage('Created user id ' + (res && res.id ? res.id : '?'));
-    createForm.reset();
+    createUserForm.reset();
     await loadUsers();
   } catch (err) {
     showMessage('Create failed: ' + (err.message || err), false);
   }
 });
 
-createUserClear.addEventListener('click', () => createForm.reset());
+createUserClear.addEventListener('click', () => createUserForm.reset());
 refreshUsersBtn.addEventListener('click', loadUsers);
 filterInput.addEventListener('input', () => loadUsers());
 
@@ -131,7 +131,7 @@ editUserForm.addEventListener('submit', async (ev) => {
   try {
     await api.updateUser(id, payload);
     showMessage('Updated user ' + id);
-    editForm.reset();
+    editUserForm.reset();
     await loadUsers();
   } catch (err) {
     showMessage('Update failed: ' + (err.message || err), false);
