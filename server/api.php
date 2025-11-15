@@ -2,19 +2,9 @@
 // Simple REST API for Gym Tracker
 header('Content-Type: application/json');
 
-require("inc/config.php");
+require_once __DIR__ . '/Controllers/UserController.php';
 
-// DB CONFIG
-
-try {
-    $pdo = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ]);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
-    exit;
-}
+use Models\User;
 
 // Helpers
 function respond($data, $code = 200) {
@@ -42,27 +32,21 @@ $path = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
 switch ($path[0]) {
     case 'users':
     {
+        $userController = new \Controllers\UserController();
         if ($method === 'POST') {
             // Create user
             $data = get_input();
-            $stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
-            $stmt->bindParam(":username", $data['username'], PDO::PARAM_STR);
-            $stmt->bindParam(":email", $data['email'], PDO::PARAM_STR);
-            $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
-            $stmt->bindParam(":password_hash", $password_hash, PDO::PARAM_STR);
-            $stmt->execute();
+            $userController->createUser($data['username'], $data['email'], $data['password']);
             respond(['id' => $pdo->lastInsertId()], 201);
         } else if ($method === 'GET') {
             if (isset($path[1])) {
                 // Get user
-                $stmt = $pdo->prepare("SELECT id, username, email, created_at FROM users WHERE id = :id");
-                $stmt->execute([':id' => $path[1]]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $user = new User;
+                $user->read($path[1]);
                 respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
             } else {
                 // List all users
-                $stmt = $pdo->query("SELECT id, username, email, created_at FROM users");
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $userController->getUsers();
                 respond($result);
             }
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
@@ -93,8 +77,7 @@ switch ($path[0]) {
             }
         } else if ($method === 'DELETE' && isset($path[1])) {
             // Delete user
-            $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
+            $result = $userController->deleteUser($path[1]);
             respond(['success' => true]);
         }
         break;

@@ -21,9 +21,9 @@ COPY ./index.html /var/www/html/
 COPY ./css /var/www/html/css/
 COPY ./js /var/www/html/js/
 
-RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/inc/config.php
-RUN sed -i s/DUMMYPASS/${db_password}/ /var/www/html/inc/config.php
-RUN sed -i s/DUMMYHOST/${db_host}/ /var/www/html/inc/config.php
-RUN sed -i s/DUMMYNAME/${db_name}/ /var/www/html/inc/config.php
+RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/Config/config.php
+RUN sed -i s/DUMMYPASS/${db_password}/ /var/www/html/Config/config.php
+RUN sed -i s/DUMMYHOST/${db_host}/ /var/www/html/Config/config.php
+RUN sed -i s/DUMMYNAME/${db_name}/ /var/www/html/Config/config.php
 
 EXPOSE 80/tcp
