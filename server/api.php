@@ -42,7 +42,7 @@ switch ($path[0]) {
             if (isset($path[1])) {
                 // Get user
                 $user = new User;
-                $user->read($path[1]);
+                $result = $user->read($path[1]);
                 respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
             } else {
                 // List all users
