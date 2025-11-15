@@ -138,7 +138,7 @@ editUserForm.addEventListener('submit', async (ev) => {
   }
 });
 
-cancelUserEdit.addEventListener('click', () => editForm.reset());
+cancelUserEdit.addEventListener('click', () => editUserForm.reset());
 
 // initial load
 loadUsers();
