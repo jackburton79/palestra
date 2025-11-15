@@ -40,14 +40,24 @@ class User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function update($id, $name, $email)
+    public function update($id, $name, $email, $password)
     {
-        /*$sql = "UPDATE users SET name = :name, email = :email WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();*/
+        $fields = [];
+        $params = [':id' => $id];
+        if (isset($name)) {
+            $fields[] = "username = :username";
+            $params[':username'] = $name;
+        }
+        if (isset($email)) {
+            $fields[] = "email = :email";
+            $params[':email'] = $email;
+        }
+        if (isset($password)) {
+            $fields[] = "password_hash = :password_hash";
+            $params[':password_hash'] = $password;
+        }
+        $stmt = $this->conn->prepare("UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id");
+        return $stmt->execute($params);
     }
     
     public function delete($id)

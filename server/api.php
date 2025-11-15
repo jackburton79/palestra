@@ -52,23 +52,10 @@ switch ($path[0]) {
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
             // Update user
             $data = get_input();
-            $fields = [];
-            $params = [':id' => $path[1]];
-            if (isset($data['username'])) {
-                $fields[] = "username = :username";
-                $params[':username'] = $data['username'];
-            }
-            if (isset($data['email'])) {
-                $fields[] = "email = :email";
-                $params[':email'] = $data['email'];
-            }
-            if (isset($data['password'])) {
-                $fields[] = "password_hash = :password_hash";
-                $params[':password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
-            }
-            if ($fields) {
-                $stmt = $pdo->prepare("UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id");
-                if ($stmt->execute($params))
+            if (true) {
+                $result = $userController->updateUser($path[1],
+                    $data['username'], $data['email'], $data['password']);
+                if ($result)
                     respond(['success' => true]);
                 else
                     respond(['error' => 'Invalid user'], 400);
