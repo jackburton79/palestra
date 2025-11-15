@@ -3,21 +3,21 @@ import * as api from './api.js';
 const msgEl = document.getElementById('message');
 const usersTbody = document.querySelector('#usersTable tbody');
 
-const createForm = document.getElementById('createForm');
+const createUserForm = document.getElementById('createUserForm');
 const createUsername = document.getElementById('createUsername');
 const createEmail = document.getElementById('createEmail');
 const createPassword = document.getElementById('createPassword');
-const createClear = document.getElementById('createClear');
+const createUserClear = document.getElementById('createUserClear');
 
-const refreshBtn = document.getElementById('refreshBtn');
-const filterInput = document.getElementById('filter');
+const refreshUsersBtn = document.getElementById('refreshUsersBtn');
+const filterInput = document.getElementById('filterUsers');
 
-const editForm = document.getElementById('editForm');
+const editUserForm = document.getElementById('editUserForm');
 const editId = document.getElementById('editId');
 const editUsername = document.getElementById('editUsername');
 const editEmail = document.getElementById('editEmail');
 const editPassword = document.getElementById('editPassword');
-const cancelEdit = document.getElementById('cancelEdit');
+const cancelUserEdit = document.getElementById('cancelUserEdit');
 
 function showMessage(text, ok = true) {
   msgEl.textContent = text;
@@ -99,7 +99,7 @@ usersTbody.addEventListener('click', async (ev) => {
   }
 });
 
-createForm.addEventListener('submit', async (ev) => {
+createUserForm.addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const payload = {
     username: createUsername.value.trim(),
@@ -116,11 +116,11 @@ createForm.addEventListener('submit', async (ev) => {
   }
 });
 
-createClear.addEventListener('click', () => createForm.reset());
-refreshBtn.addEventListener('click', loadUsers);
+createUserClear.addEventListener('click', () => createForm.reset());
+refreshUsersBtn.addEventListener('click', loadUsers);
 filterInput.addEventListener('input', () => loadUsers());
 
-editForm.addEventListener('submit', async (ev) => {
+editUserForm.addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const id = editId.value;
   if (!id) return showMessage('Select a user to edit', false);
@@ -138,7 +138,7 @@ editForm.addEventListener('submit', async (ev) => {
   }
 });
 
-cancelEdit.addEventListener('click', () => editForm.reset());
+cancelUserEdit.addEventListener('click', () => editForm.reset());
 
 // initial load
 loadUsers();
