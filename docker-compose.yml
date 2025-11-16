@@ -15,10 +15,12 @@ services:
         networks:
           gymnet_backend:
             ipv4_address: 172.23.1.2
+        #volumes:
+        #  - ./src:/var/www/html
         depends_on:
           database:
             condition: service_healthy
-    
+
     database:
         container_name: gym_database
         image: mariadb

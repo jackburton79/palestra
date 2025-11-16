@@ -6,7 +6,7 @@ ARG db_password
 ARG db_host
 ARG db_name
 
-RUN apt-get update && apt-get install -y locales
+RUN apt-get update && apt-get install -y locales git unzip
 RUN echo 'it_IT.UTF-8 UTF-8' >> /etc/locale.gen
 RUN dpkg-reconfigure --frontend noninteractive locales
 RUN locale-gen it_IT.UTF-8
@@ -14,7 +14,11 @@ RUN locale-gen it_IT.UTF-8
 ENV LANG POSIX
 ENV LC_CTYPE it_IT.UTF-8
 RUN apt-get update && \
-	docker-php-ext-install pdo pdo_mysql	
+	docker-php-ext-install pdo pdo_mysql
+
+# Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer require slim/slim
 
 COPY ./src /var/www/html/
 
