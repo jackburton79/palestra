@@ -1,6 +1,7 @@
 <?php
 // Simple REST API for Gym Tracker
 
+require_once __DIR__ . '/../Controllers/ExerciseController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
 
 use Slim\Factory\AppFactory;
@@ -12,14 +13,15 @@ $app = AppFactory::create();
 
 $app->addErrorMiddleware(true, true, true);
 
-//$container = $app->getContainer();
-//$container->set('db', function () {
+$container = $app->getContainer();
+$container->set('db', function () {
     $configs = include(__DIR__ . '/../Config/config.php');
-    $db =  new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
+    return new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
         $configs->dbUser, $configs->dbPass);
-//});
+});
 
-$userController = new UserController($db);
+$userController = new UserController($container->get('$db'));
+$exerciseController = new ExericiseController($container->get('$db'));
 
 // Routes
 $app->get('/users', [$userController, 'getUsers']);
@@ -27,6 +29,12 @@ $app->get('/user/{id}', [$userController, 'getUser']);
 $app->post('/user', [$userController, 'createUser']);
 $app->put('/user/{id}', [$userController, 'updateUser']);
 $app->delete('/user/{id}', [$userController, 'deleteUser']);
+
+$app->get('/exercises', [$exerciseController, 'getExercises']);
+$app->get('/exercise/{id}', [$exerciseController, 'getExercise']);
+$app->post('/exercise', [$exerciseController, 'createExercise']);
+$app->put('/exercise/{id}', [$exerciseController, 'updateExercise']);
+$app->delete('/exercise/{id}', [$exerciseController, 'deleteExercise']);
 
 $app->run();
 
@@ -62,97 +70,6 @@ $conn = $database->connect();
 // ROUTING
 $method = $_SERVER['REQUEST_METHOD'];
 $path = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
-
-// Routes
-switch ($path[0]) {
-    case 'users':
-    {
-        $userController = new \Controllers\UserController($conn);
-        if ($method === 'POST') {
-            // Create user
-            $data = get_input();
-            $newID = $userController->createUser($data['username'], $data['email'], $data['password']);
-            respond(['id' => $newID], 201);
-        } else if ($method === 'GET') {
-            if (isset($path[1])) {
-                // Get user
-                $result = $userController->getUser($path[1]);
-                respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
-            } else {
-                // List all users
-                $result = $userController->getUsers();
-                respond($result);
-            }
-        } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
-            // Update user
-            $data = get_input();
-            if (true) {
-                $result = $userController->updateUser($path[1],
-                    $data['username'], $data['email'], $data['password']);
-                if ($result)
-                    respond(['success' => true]);
-                else
-                    respond(['error' => 'Invalid user'], 400);
-            } else {
-                respond(['error' => 'No fields to update'], 400);
-            }
-        } else if ($method === 'DELETE' && isset($path[1])) {
-            // Delete user
-            $result = $userController->deleteUser($path[1]);
-            respond(['success' => true]);
-        }
-        break;
-    }
-    case 'exercises':
-    {
-        $exerciseController = new \Controllers\ExerciseController($conn);
-        if ($method === 'POST') {
-            $data = get_input();
-            $newID = $exerciseController->createExercise($data['name'], $data['description'], $data['category']);
-            respond(['id' => $newID], 201);
-        } else if ($method === 'GET') {
-            if (isset($path[1])) {
-                // Get single exercise
-                $result = $exerciseController->getExercise($path[1]);
-                respond($result ?: ['error' => 'Exercise not found'], $result ? 200 : 404);
-            } else {
-                // List all
-                $result = $exerciseController->getExercises();
-                respond($result);
-            }
-        } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
-            // Update exercise
-            $data = get_input();
-            $fields = [];
-            $params = [':id' => $path[1]];
-            if (isset($data['name'])) {
-                $fields[] = "name = :name";
-                $params[':name'] = $data['name'];
-            }
-            if (isset($data['description'])) {
-                $fields[] = "description = :description";
-                $params[':description'] = $data['description'];
-            }
-            if (isset($data['category'])) {
-                $fields[] = "category = :category";
-                $params[':category'] = $data['category'];
-            }
-            if ($fields) {
-                $stmt = $pdo->prepare("UPDATE exercises SET ".implode(', ', $fields)." WHERE id = :id");
-                if ($stmt->execute($params))
-                    respond(['success' => true]);
-                else
-                    respond(['error' => 'Invalid exercise'], 400);
-            } else {
-                respond(['error' => 'No fields to update'], 400);
-            }
-        } else if ($method === 'DELETE' && isset($path[1])) {
-            // Delete exercise
-            $exerciseController->deleteExercise($path[1]);
-            respond(['success' => true]);
-        }
-        break;
-    }
     case 'workouts':
     {
         if ($method === 'POST') {
