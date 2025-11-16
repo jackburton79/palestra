@@ -10,13 +10,12 @@ use PDO;
 
 class User {
     private $conn;
-
-    public function __construct()
-    {
-        $database = new Database();
-        $this->conn = $database->connect();
-    }
     
+    public function __construct($conn)
+    {
+        $this->conn = $conn;
+    }
+
     public function create($name, $email, $password)
     {
         $stmt = $this->conn->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
