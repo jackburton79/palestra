@@ -5,7 +5,7 @@ namespace Controllers;
 
 require_once __DIR__ . '/../Models/User.php';
 
-use Slim\Http\Request as Request;
+use Slim\Http\ServerRequest as Request;
 use Slim\Http\Response as Response;
 
 use Models\User;
@@ -21,7 +21,9 @@ class UserController
     
     public function createUser(Request $request, Response $response)
     {
-        //return $this->model->create($name, $email, $password);
+        $data = $request->getParsedBody();
+        $this->model->create($data['username'], $data['email'], $data['password']);
+        return $response->withStatus(201)->write('User created');
     }
     
     public function getUser(Request $request, Response $response, $args)

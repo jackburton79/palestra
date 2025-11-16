@@ -6,11 +6,15 @@ ARG db_password
 ARG db_host
 ARG db_name
 
+RUN a2enmod rewrite
 RUN apt-get update && apt-get install -y locales git unzip
 RUN echo 'it_IT.UTF-8 UTF-8' >> /etc/locale.gen
 RUN dpkg-reconfigure --frontend noninteractive locales
 RUN locale-gen it_IT.UTF-8
 
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
+    
 ENV LANG POSIX
 ENV LC_CTYPE it_IT.UTF-8
 RUN apt-get update && \
