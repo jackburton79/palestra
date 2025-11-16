@@ -28,7 +28,7 @@ class ExerciseController
     
     public function getExercise(Request $request, Response $response, $args)
     {
-        exercise = $this->model->read($args['id']);
+        $exercise = $this->model->read($args['id']);
         return $response->withJson(exercise);
     }
     
