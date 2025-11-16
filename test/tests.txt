@@ -41,3 +41,8 @@ curl -X POST http://localhost:8380/api.php/exercises \
 ```bash
 curl -X GET http://localhost:8380/api.php/exercises
 ```
+
+## 5. Delete Exercise (DELETE)
+```bash
+curl -X DELETE http://localhost:8380/api.php/exercises/1
+```
