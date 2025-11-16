@@ -7,13 +7,13 @@ require_once __DIR__ . '/../Config/Database.php';
 use Config\Database;
 use PDO;
 
-class Exercise {
+class Exercise
+{
     private $conn;
     
-    public function __construct()
+    public function __construct($conn)
     {
-        $database = new Database();
-        $this->conn = $database->connect();
+        $this->conn = $conn;
     }
     public function create($name, $description, $category)
     {

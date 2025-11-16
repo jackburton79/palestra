@@ -9,33 +9,35 @@ use Models\Exercise;
 
 class ExerciseController
 {
+    private $model;
+    
+    public function __construct($db)
+    {
+        $this->model = new Exercise($db);
+    }
+    
     public function createExercise($name, $description, $category)
     {
-        $exercise = new Exercise();
-        return $exercise->create($name, $description, $category);
+        return $this->model->create($name, $description, $category);
     }
     
     public function getExercise($id)
     {
-        $exercise = new Exercise();
-        return $exercise->read($id);
+        return $this->model->read($id);
     }
     
     public function getExercises()
     {
-        $exercise = new Exercise();
-        return $exercise->readAll();
+        return $this->model->readAll();
     }
     
     /*public function updateExercise($id, $name, $email, $password)
     {
-        $exercise = new Exercise();
-        return $exercise->update($id, $name, $email, $password);
+        return $this->model->update($id, $name, $email, $password);
     }*/
     
     public function deleteExercise($id)
     {
-        $exercise = new Exercise();
-        return $exercise->delete($id);
+        return $this->model->delete($id);
     }
 }

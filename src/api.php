@@ -32,6 +32,7 @@ $app->run();
 require_once __DIR__ . '/Controllers/ExerciseController.php';
 require_once __DIR__ . '/Controllers/UserController.php';
 
+use Config\Database;
 
 // Helpers
 function respond($data, $code = 200) {
@@ -51,6 +52,9 @@ function get_input() {
     return $_POST;
 }
 
+$database = new Database();
+$conn = $database->connect();
+
 // ROUTING
 $method = $_SERVER['REQUEST_METHOD'];
 $path = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
@@ -59,7 +63,7 @@ $path = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
 switch ($path[0]) {
     case 'users':
     {
-        $userController = new \Controllers\UserController();
+        $userController = new \Controllers\UserController($conn);
         if ($method === 'POST') {
             // Create user
             $data = get_input();
@@ -97,7 +101,7 @@ switch ($path[0]) {
     }
     case 'exercises':
     {
-        $exerciseController = new \Controllers\ExerciseController();
+        $exerciseController = new \Controllers\ExerciseController($conn);
         if ($method === 'POST') {
             $data = get_input();
             $newID = $exerciseController->createExercise($data['name'], $data['description'], $data['category']);

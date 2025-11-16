@@ -9,33 +9,35 @@ use Models\User;
 
 class UserController
 {
+    private $model;
+
+    public function __construct($conn)
+    {
+        $this->model = new User($conn);
+    }
+    
     public function createUser($name, $email, $password)
     {
-        $user = new User();
-        return $user->create($name, $email, $password);
+        return $this->model->create($name, $email, $password);
     }
     
     public function getUser($id)
     {
-        $user = new User();
-        return $user->read($id);
+        return $this->model->read($id);
     }
-
+    
     public function getUsers()
     {
-        $user = new User();
-        return $user->readAll();
+        return $this->model->readAll();
     }
     
     public function updateUser($id, $name, $email, $password)
     {
-        $user = new User();
-        return $user->update($id, $name, $email, $password);
+        return $this->model->update($id, $name, $email, $password);
     }
     
     public function deleteUser($id)
     {
-        $user = new User();
-        return $user->delete($id);
+        return $this->model->delete($id);
     }
 }
