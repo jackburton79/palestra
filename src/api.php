@@ -1,6 +1,8 @@
 <?php
 // Simple REST API for Gym Tracker
 
+require_once __DIR__ . '/Controllers/UserController.php';
+
 use Slim\Factory\AppFactory;
 use Controllers\UserController;
 
@@ -8,14 +10,16 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$container = $app->getContainer();
-$container->set('db', function () {
-    $configs = include(__DIR__ . '/config.php');
-    return new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
-        $configs->dbUser, $configs->dbPass);
-});
+$app->addErrorMiddleware(true, true, true);
 
-$userController = new UserController($container->get('db'));
+//$container = $app->getContainer();
+//$container->set('db', function () {
+    $configs = include(__DIR__ . '/Config/config.php');
+    $db =  new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
+        $configs->dbUser, $configs->dbPass);
+//});
+
+$userController = new UserController($db);
 
 // Routes
 $app->get('/users', [$userController, 'getUsers']);
