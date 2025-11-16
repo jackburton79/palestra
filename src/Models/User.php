@@ -8,7 +8,8 @@ use Config\Database;
 
 use PDO;
 
-class User {
+class User
+{
     private $conn;
     
     public function __construct($conn)
