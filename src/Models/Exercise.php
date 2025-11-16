@@ -61,7 +61,7 @@ class Exercise {
     }*/
     public function delete($id)
     {
-        $stmt = $pdo->prepare("DELETE FROM exercises WHERE id = :id");
+        $stmt = $this->conn->prepare("DELETE FROM exercises WHERE id = :id");
         $result = $stmt->execute([':id' => $id]);
         return $result;
     }
