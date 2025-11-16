@@ -23,7 +23,7 @@ class ExerciseController
     {
         $data = $request->getParsedBody();
         $this->model->create($data['name'], $data['description'], $data['category']);
-        return $response->withStatus(201)->write('User created');
+        return $response->withStatus(201)->write('Exercise created');
     }
     
     public function getExercise(Request $request, Response $response, $args)
