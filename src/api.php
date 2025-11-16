@@ -2,9 +2,9 @@
 // Simple REST API for Gym Tracker
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/Controllers/ExerciseController.php';
 require_once __DIR__ . '/Controllers/UserController.php';
 
-use Models\User;
 
 // Helpers
 function respond($data, $code = 200) {
@@ -36,13 +36,12 @@ switch ($path[0]) {
         if ($method === 'POST') {
             // Create user
             $data = get_input();
-            $userController->createUser($data['username'], $data['email'], $data['password']);
-            respond(['id' => $pdo->lastInsertId()], 201);
+            $newID = $userController->createUser($data['username'], $data['email'], $data['password']);
+            respond(['id' => $newID], 201);
         } else if ($method === 'GET') {
             if (isset($path[1])) {
                 // Get user
-                $user = new User;
-                $result = $user->read($path[1]);
+                $result = $userController->getUser($path[1]);
                 respond($result ?: ['error' => 'User not found'], $result ? 200 : 404);
             } else {
                 // List all users
@@ -71,25 +70,19 @@ switch ($path[0]) {
     }
     case 'exercises':
     {
+        $exerciseController = new \Controllers\ExerciseController();
         if ($method === 'POST') {
             $data = get_input();
-            $stmt = $pdo->prepare("INSERT INTO exercises (name, description, category) VALUES (:name, :description, :category)");
-            $stmt->bindParam(":name", $data['name'], PDO::PARAM_STR);
-            $stmt->bindParam(":description", $data['description'], PDO::PARAM_STR);
-            $stmt->bindParam(":category", $data['category'], PDO::PARAM_STR);
-            $stmt->execute();
-            respond(['id' => $pdo->lastInsertId()], 201);
+            $newID = $exerciseController->createExercise($data['name'], $data['description'], $data['category']);
+            respond(['id' => $newID], 201);
         } else if ($method === 'GET') {
             if (isset($path[1])) {
                 // Get single exercise
-                $stmt = $pdo->prepare("SELECT * FROM exercises WHERE id = :id");
-                $stmt->execute([':id' => $path[1]]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $result = $exerciseController->getExercise($path[1]);
                 respond($result ?: ['error' => 'Exercise not found'], $result ? 200 : 404);
             } else {
                 // List all
-                $stmt = $pdo->query("SELECT * FROM exercises");
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $result = $exerciseController->getExercises();
                 respond($result);
             }
         } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
@@ -120,8 +113,7 @@ switch ($path[0]) {
             }
         } else if ($method === 'DELETE' && isset($path[1])) {
             // Delete exercise
-            $stmt = $pdo->prepare("DELETE FROM exercises WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
+            $exerciseController->deleteExercise($path[1]);
             respond(['success' => true]);
         }
         break;
