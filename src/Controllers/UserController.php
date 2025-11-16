@@ -40,7 +40,9 @@ class UserController
     
     public function updateUser(Request $request, Response $response, $args)
     {
-        //return $this->model->update($id, $name, $email, $password);
+        $data = $request->getParsedBody();
+        $this->userModel->update($args['id'], $data['name'], $data['email'], $data['password']);
+        return $response->write('User updated');
     }
     
     public function deleteUser(Request $request, Response $response, $args)

@@ -36,6 +36,7 @@ class User
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
     public function readAll()
     {
         $stmt = $this->conn->query("SELECT id, username, email, created_at FROM users");
