@@ -20,11 +20,11 @@ ENV LC_CTYPE it_IT.UTF-8
 RUN apt-get update && \
 	docker-php-ext-install pdo pdo_mysql
 
+COPY ./src /var/www/html/
+
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer require slim/slim slim/psr7 slim/http
-
-COPY ./src /var/www/html/
+RUN composer --working-dir=/var/www/html/public require slim/slim slim/psr7 slim/http
 
 RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/Config/config.php
 RUN sed -i s/DUMMYPASS/${db_password}/ /var/www/html/Config/config.php
