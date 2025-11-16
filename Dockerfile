@@ -18,7 +18,7 @@ RUN apt-get update && \
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer require slim/slim
+RUN composer require slim/slim slim/psr7 slim/http
 
 COPY ./src /var/www/html/
 
