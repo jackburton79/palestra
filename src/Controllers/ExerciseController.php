@@ -22,14 +22,14 @@ class ExerciseController
     public function createExercise(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
-        $this->model->create($data['name'], $data['description'], $$data['category']);
+        $this->model->create($data['name'], $data['description'], $data['category']);
         return $response->withStatus(201)->write('User created');
     }
     
     public function getExercise(Request $request, Response $response, $args)
     {
         $exercise = $this->model->read($args['id']);
-        return $response->withJson(exercise);
+        return $response->withJson($exercise);
     }
     
     public function getExercises(Request $request, Response $response)
