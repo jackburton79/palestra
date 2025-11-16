@@ -2,47 +2,47 @@
 
 ## 1. Create User (POST)
 ```bash
-curl -X POST http://localhost:8380/api.php/users \
+curl -X POST http://localhost:8380/user \
      -H "Content-Type: application/json" \
      -d '{"username":"testuser","email":"test@example.com","password":"secret123"}'
 ```
 
 ## 2. Read User (GET)
 ```bash
-curl -X GET http://localhost:8380/api.php/users/1
+curl -X GET http://localhost:8380/user/1
 ```
 
 ## 3. List All Users (GET)
 ```bash
-curl -X GET http://localhost:8380/api.php/users
+curl -X GET http://localhost:8380/users
 ```
 
 ## 4. Update User (PUT)
 ```bash
-curl -X PUT http://localhost:8380/api.php/users/1 \
+curl -X PUT http://localhost:8380/user/1 \
      -H "Content-Type: application/json" \
      -d '{"username":"updateduser","email":"updated@example.com","password":"newpass456"}'
 ```
 
 ## 5. Delete User (DELETE)
 ```bash
-curl -X DELETE http://localhost:8380/api.php/users/1
+curl -X DELETE http://localhost:8380/user/1
 ```
 
 # Exercises
 ## 1. Create Exercise (POST)
 ```bash
-curl -X POST http://localhost:8380/api.php/exercises \
+curl -X POST http://localhost:8380/exercise \
      -H "Content-Type: application/json" \
      -d '{"name":"testexercise","description":"description","category":"category 1"}'
 ```
 
 ## 3. List All Exercises (GET)
 ```bash
-curl -X GET http://localhost:8380/api.php/exercises
+curl -X GET http://localhost:8380/exercises
 ```
 
 ## 5. Delete Exercise (DELETE)
 ```bash
-curl -X DELETE http://localhost:8380/api.php/exercises/1
+curl -X DELETE http://localhost:8380/exercise/1
 ```
