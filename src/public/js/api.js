@@ -22,7 +22,7 @@ async function request(path, opts = {}) {
 }
 
 export const listUsers = () => request('/users', { method: 'GET' });
-export const getUser = (id) => request(`/users/${encodeURIComponent(id)}`, { method: 'GET' });
-export const createUser = (payload) => request('/users', { method: 'POST', body: payload });
-export const updateUser = (id, payload) => request(`/users/${encodeURIComponent(id)}`, { method: 'PUT', body: payload });
-export const deleteUser = (id) => request(`/users/${encodeURIComponent(id)}`, { method: 'DELETE' });
+export const getUser = (id) => request(`/user/${encodeURIComponent(id)}`, { method: 'GET' });
+export const createUser = (payload) => request('/user', { method: 'POST', body: payload });
+export const updateUser = (id, payload) => request(`/user/${encodeURIComponent(id)}`, { method: 'PUT', body: payload });
+export const deleteUser = (id) => request(`/user/${encodeURIComponent(id)}`, { method: 'DELETE' });
