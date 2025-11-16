@@ -1,6 +1,37 @@
 <?php
 // Simple REST API for Gym Tracker
-header('Content-Type: application/json');
+
+require_once __DIR__ . '/../Controllers/UserController.php';
+
+use Slim\Factory\AppFactory;
+use Controllers\UserController;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$app = AppFactory::create();
+
+$app->addErrorMiddleware(true, true, true);
+
+//$container = $app->getContainer();
+//$container->set('db', function () {
+    $configs = include(__DIR__ . '/../Config/config.php');
+    $db =  new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
+        $configs->dbUser, $configs->dbPass);
+//});
+
+$userController = new UserController($db);
+
+// Routes
+$app->get('/users', [$userController, 'getUsers']);
+$app->get('/user/{id}', [$userController, 'getUser']);
+$app->post('/user', [$userController, 'createUser']);
+$app->put('/user/{id}', [$userController, 'updateUser']);
+$app->delete('/user/{id}', [$userController, 'deleteUser']);
+
+$app->run();
+
+/*
+//header('Content-Type: application/json');
 
 require_once __DIR__ . '/Controllers/ExerciseController.php';
 require_once __DIR__ . '/Controllers/UserController.php';
@@ -247,4 +278,7 @@ switch ($path[0]) {
     default:
         respond(['error' => 'Not found'], 404);
         break;
-}?>
+}
+*/
+
+?>
