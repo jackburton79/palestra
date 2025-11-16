@@ -5,6 +5,9 @@ namespace Controllers;
 
 require_once __DIR__ . '/../Models/User.php';
 
+use Slim\Http\Request as Request;
+use Slim\Http\Response as Response;
+
 use Models\User;
 
 class UserController
@@ -16,28 +19,31 @@ class UserController
         $this->model = new User($conn);
     }
     
-    public function createUser($name, $email, $password)
+    public function createUser(Request $request, Response $response)
     {
-        return $this->model->create($name, $email, $password);
+        //return $this->model->create($name, $email, $password);
     }
     
-    public function getUser($id)
+    public function getUser(Request $request, Response $response, $args)
     {
-        return $this->model->read($id);
+        $user = $this->model->read($args['id']);
+        return $response->withJson($user);
     }
     
-    public function getUsers()
+    public function getUsers(Request $request, Response $response)
     {
-        return $this->model->readAll();
+        $users = $this->model->readAll();
+        return $response->withJson($users);
     }
     
-    public function updateUser($id, $name, $email, $password)
+    public function updateUser(Request $request, Response $response, $args)
     {
-        return $this->model->update($id, $name, $email, $password);
+        //return $this->model->update($id, $name, $email, $password);
     }
     
-    public function deleteUser($id)
+    public function deleteUser(Request $request, Response $response, $args)
     {
-        return $this->model->delete($id);
+        $this->model->deleteUser($args['id']);
+        return $response->write('User deleted');
     }
 }

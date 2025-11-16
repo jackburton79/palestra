@@ -23,10 +23,10 @@ $userController = new UserController($db);
 
 // Routes
 $app->get('/users', [$userController, 'getUsers']);
-$app->get('/user/{id}', [$userController, 'getUser']);
-$app->post('/user', [$userController, 'createUser']);
-$app->put('/user/{id}', [$userController, 'updateUser']);
-$app->delete('/user/{id}', [$userController, 'deleteUser']);
+//$app->get('/user/{id}', [$userController, 'getUser']);
+//$app->post('/user', [$userController, 'createUser']);
+//$app->put('/user/{id}', [$userController, 'updateUser']);
+//$app->delete('/user/{id}', [$userController, 'deleteUser']);
 
 $app->run();
 
