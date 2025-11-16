@@ -5,23 +5,23 @@ require_once __DIR__ . '/../Controllers/ExerciseController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
 
 use Slim\Factory\AppFactory;
+use Controllers\ExerciseController;
 use Controllers\UserController;
 
 require __DIR__ . '/vendor/autoload.php';
 
+
+// Set container to create App with on AppFactory
 $app = AppFactory::create();
 
 $app->addErrorMiddleware(true, true, true);
 
-$container = $app->getContainer();
-$container->set('db', function () {
-    $configs = include(__DIR__ . '/../Config/config.php');
-    return new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
+$configs = include(__DIR__ . '/../Config/config.php');
+$db =  new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
         $configs->dbUser, $configs->dbPass);
-});
 
-$userController = new UserController($container->get('$db'));
-$exerciseController = new ExericiseController($container->get('$db'));
+$userController = new UserController($db);
+$exerciseController = new ExerciseController($db);
 
 // Routes
 $app->get('/users', [$userController, 'getUsers']);
