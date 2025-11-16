@@ -17,14 +17,14 @@ RUN apt-get update && \
 	docker-php-ext-install pdo pdo_mysql
 
 # Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer require slim/slim
+#RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+#	composer require slim/slim
 
 COPY ./src /var/www/html/
 
-RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/Config/config.php
-RUN sed -i s/DUMMYPASS/${db_password}/ /var/www/html/Config/config.php
-RUN sed -i s/DUMMYHOST/${db_host}/ /var/www/html/Config/config.php
-RUN sed -i s/DUMMYNAME/${db_name}/ /var/www/html/Config/config.php
+RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/Config/config.php && \
+	sed -i s/DUMMYPASS/${db_password}/ /var/www/html/Config/config.php && \
+	sed -i s/DUMMYHOST/${db_host}/ /var/www/html/Config/config.php && \
+	sed -i s/DUMMYNAME/${db_name}/ /var/www/html/Config/config.php
 
 EXPOSE 80/tcp
