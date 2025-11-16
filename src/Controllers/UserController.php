@@ -45,7 +45,7 @@ class UserController
     
     public function deleteUser(Request $request, Response $response, $args)
     {
-        $this->model->deleteUser($args['id']);
+        $this->model->delete($args['id']);
         return $response->write('User deleted');
     }
 }

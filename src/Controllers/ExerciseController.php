@@ -5,6 +5,9 @@ namespace Controllers;
 
 require_once __DIR__ . '/../Models/Exercise.php';
 
+use Slim\Http\ServerRequest as Request;
+use Slim\Http\Response as Response;
+
 use Models\Exercise;
 
 class ExerciseController
@@ -16,19 +19,23 @@ class ExerciseController
         $this->model = new Exercise($db);
     }
     
-    public function createExercise($name, $description, $category)
+    public function createExercise(Request $request, Response $response)
     {
-        return $this->model->create($name, $description, $category);
+        $data = $request->getParsedBody();
+        $this->model->create($data['name'], $data['description'], $$data['category']);
+        return $response->withStatus(201)->write('User created');
     }
     
-    public function getExercise($id)
+    public function getExercise(Request $request, Response $response, $args)
     {
-        return $this->model->read($id);
+        exercise = $this->model->read($args['id']);
+        return $response->withJson(exercise);
     }
     
-    public function getExercises()
+    public function getExercises(Request $request, Response $response)
     {
-        return $this->model->readAll();
+        $exercises = $this->model->readAll();
+        return $response->withJson($exercises);
     }
     
     /*public function updateExercise($id, $name, $email, $password)
@@ -36,8 +43,9 @@ class ExerciseController
         return $this->model->update($id, $name, $email, $password);
     }*/
     
-    public function deleteExercise($id)
+    public function deleteExercise(Request $request, Response $response, $args)
     {
-        return $this->model->delete($id);
+        $this->model->delete($args['id']);
+        return $response->write('Exercise deleted');
     }
 }
