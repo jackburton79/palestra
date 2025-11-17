@@ -38,10 +38,12 @@ class ExerciseController
         return $response->withJson($exercises);
     }
     
-    /*public function updateExercise($id, $name, $email, $password)
+    public function updateExercise(Request $request, Response $response)
     {
-        return $this->model->update($id, $name, $email, $password);
-    }*/
+        $data = $request->getParsedBody();
+        $this->userModel->update($args['id'], $data['name'], $data['category'], $data['description']);
+        return $response->write('User updated');
+    }
     
     public function deleteExercise(Request $request, Response $response, $args)
     {
