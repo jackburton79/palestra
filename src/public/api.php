@@ -3,10 +3,12 @@
 
 require_once __DIR__ . '/../Controllers/ExerciseController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
+require_once __DIR__ . '/../Controllers/WorkoutController.php';
 
 use Slim\Factory\AppFactory;
 use Controllers\ExerciseController;
 use Controllers\UserController;
+use Controllers\WorkoutController;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -22,6 +24,7 @@ $db =  new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
 
 $userController = new UserController($db);
 $exerciseController = new ExerciseController($db);
+$workoutController = new WorkoutController($db);
 
 // Routes
 $app->get('/users', [$userController, 'getUsers']);
@@ -36,6 +39,11 @@ $app->post('/exercise', [$exerciseController, 'createExercise']);
 $app->put('/exercise/{id}', [$exerciseController, 'updateExercise']);
 $app->delete('/exercise/{id}', [$exerciseController, 'deleteExercise']);
 
+$app->get('/workouts', [$workoutController, 'getWorkouts']);
+$app->get('/workout/{id}', [$workoutController, 'getWorkout']);
+$app->post('/workout', [$workoutController, 'createWorkout']);
+$app->put('/workout/{id}', [$workoutController, 'updateWorkout']);
+$app->delete('/workout/{id}', [$workoutController, 'deleteWorkout']);
 $app->run();
 
 /*
