@@ -41,7 +41,7 @@ class UserController
     public function updateUser(Request $request, Response $response, $args)
     {
         $data = $request->getParsedBody();
-        $this->userModel->update($args['id'], $data['name'], $data['email'], $data['password']);
+        $this->model->update($args['id'], $data['name'], $data['email'], $data['password']);
         return $response->write('User updated');
     }
     
