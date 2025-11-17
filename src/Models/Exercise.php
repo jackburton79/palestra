@@ -10,11 +10,12 @@ use PDO;
 class Exercise
 {
     private $conn;
-    
+
     public function __construct($conn)
     {
         $this->conn = $conn;
     }
+
     public function create($name, $description, $category)
     {
         $stmt = $this->conn->prepare("INSERT INTO exercises (name, description, category) VALUES (:name, :description, :category)");
@@ -26,6 +27,7 @@ class Exercise
         else
             return NULL;
     }
+
     public function read($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM exercises WHERE id = :id");
@@ -33,13 +35,14 @@ class Exercise
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result;
     }
+
     public function readAll()
     {
         $stmt = $this->conn->query("SELECT * FROM exercises");
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
-    
+
     public function update($id, $name, $description, $category)
     {
         $fields = [];
@@ -48,7 +51,7 @@ class Exercise
             $fields[] = "name = :name";
             $params[':name'] = $name;
         }
-        if (isset(description)) {
+        if (isset($description)) {
             $fields[] = "description = :description";
             $params[':description'] = $description;
         }
@@ -59,7 +62,7 @@ class Exercise
         $stmt = $this->conn->prepare("UPDATE exercises SET " . implode(', ', $fields) . " WHERE id = :id");
         return $stmt->execute($params);
     }
-    
+
     public function delete($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM exercises WHERE id = :id");
