@@ -49,7 +49,7 @@ class Workout
             $fields[] = "user_id = :user_id";
             $params[':user_id'] = $user_id;
         }
-        if (isset(description)) {
+        if (isset($description)) {
             $fields[] = "date = :date";
             $params[':date'] = $date;
         }
