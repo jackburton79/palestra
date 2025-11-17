@@ -40,25 +40,26 @@ class Exercise
         return $result;
     }
     
-    /*public function update($id, $name, $email, $password)
+    public function update($id, $name, $description, $category)
     {
         $fields = [];
         $params = [':id' => $id];
         if (isset($name)) {
-            $fields[] = "username = :username";
-            $params[':username'] = $name;
+            $fields[] = "name = :name";
+            $params[':name'] = $name;
         }
-        if (isset($email)) {
-            $fields[] = "email = :email";
-            $params[':email'] = $email;
+        if (isset(description)) {
+            $fields[] = "description = :description";
+            $params[':description'] = $description;
         }
-        if (isset($password)) {
-            $fields[] = "password_hash = :password_hash";
-            $params[':password_hash'] = $password;
+        if (isset($category)) {
+            $fields[] = "category = :category";
+            $params[':category'] = $category;
         }
-        $stmt = $this->conn->prepare("UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id");
+        $stmt = $this->conn->prepare("UPDATE exercises SET " . implode(', ', $fields) . " WHERE id = :id");
         return $stmt->execute($params);
-    }*/
+    }
+    
     public function delete($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM exercises WHERE id = :id");
