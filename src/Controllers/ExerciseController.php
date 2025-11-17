@@ -41,8 +41,8 @@ class ExerciseController
     public function updateExercise(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
-        $this->userModel->update($args['id'], $data['name'], $data['category'], $data['description']);
-        return $response->write('User updated');
+        $this->model->update($args['id'], $data['name'], $data['category'], $data['description']);
+        return $response->write('Exercise updated');
     }
     
     public function deleteExercise(Request $request, Response $response, $args)
