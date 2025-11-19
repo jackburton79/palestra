@@ -52,7 +52,7 @@ curl -X DELETE http://localhost:8380/exercise/1
 ```bash
 curl -X POST http://localhost:8380/workout \
      -H "Content-Type: application/json" \
-     -d '{"user_id":"1","date":"01/02/2023","notes":"testnote"}'
+     -d '{"user_id":"1","date":"20230102","notes":"testnote"}'
 ```
 
 ## 3. List All Workoutss (GET)
