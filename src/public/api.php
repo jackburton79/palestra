@@ -78,62 +78,6 @@ $conn = $database->connect();
 // ROUTING
 $method = $_SERVER['REQUEST_METHOD'];
 $path = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
-    case 'workouts':
-    {
-        if ($method === 'POST') {
-            $data = get_input();
-            $stmt = $pdo->prepare("INSERT INTO workouts (user_id, date, notes) VALUES (:user_id, :date, :notes)");
-            $stmt->bindParam(":user_id", $data['user_id'], PDO::PARAM_INT);
-            $stmt->bindParam(":date", $data['date'], PDO::PARAM_STR);
-            $stmt->bindParam(":notes", $data['notes'], PDO::PARAM_STR);
-            $stmt->execute();
-            respond(['id' => $pdo->lastInsertId()], 201);
-        } else if ($method === 'GET') {
-            if (isset($path[1])) {
-                $stmt = $pdo->prepare("SELECT * FROM workouts WHERE id = :id");
-                $stmt->execute([':id' => $path[1]]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                respond($result ?: ['error' => 'Workout not found'], $result ? 200 : 404);
-            } else {
-                $stmt = $pdo->query("SELECT * FROM workouts");
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                respond($result);
-            }
-        } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
-            // Update workout
-            $data = get_input();
-            $fields = [];
-            $params = [':id' => $path[1]];
-            if (isset($data['user_id'])) {
-                $fields[] = "user_id = :user_id";
-                $params[':user_id'] = $data['user_id'];
-            }
-            if (isset($data['date'])) {
-                $fields[] = "date = :date";
-                $params[':date'] = $data['date'];
-            }
-            if (isset($data['notes'])) {
-                $fields[] = "notes = :notes";
-                $params[':notes'] = $data['notes'];
-            }
-            if ($fields) {
-                $stmt = $pdo->prepare("UPDATE workouts SET ".implode(', ', $fields)." WHERE id = :id");
-                $stmt->execute($params);
-                if ($stmt->execute($params))
-                    respond(['success' => true]);
-                else
-                     respond(['error' => 'Invalid user'], 400);
-            } else {
-                respond(['error' => 'No fields to update'], 400);
-            }
-        } else if ($method === 'DELETE' && isset($path[1])) {
-            // Delete workout
-            $stmt = $pdo->prepare("DELETE FROM workouts WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
-            respond(['success' => true]);
-        }
-        break;
-    }
     case 'workout_sets':
     {
         if ($method === 'POST') {
