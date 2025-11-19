@@ -18,9 +18,9 @@ class Workout
     public function create($user_id, $date, $notes)
     {
         $stmt = $this->conn->prepare("INSERT INTO workouts (user_id, date, notes) VALUES (:user_id, :date, :notes)");
-        $stmt->bindParam(":user_id", $name, PDO::PARAM_STR);
-        $stmt->bindParam(":date", $description, PDO::PARAM_STR);
-        $stmt->bindParam(":notes", $category, PDO::PARAM_STR);
+        $stmt->bindParam(":user_id", $user_id, PDO::PARAM_STR);
+        $stmt->bindParam(":date", $date, PDO::PARAM_STR);
+        $stmt->bindParam(":notes", $notes, PDO::PARAM_STR);
         if ($stmt->execute())
             return $this->conn->lastInsertId();
         else
