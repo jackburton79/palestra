@@ -4,11 +4,13 @@
 require_once __DIR__ . '/../Controllers/ExerciseController.php';
 require_once __DIR__ . '/../Controllers/UserController.php';
 require_once __DIR__ . '/../Controllers/WorkoutController.php';
+require_once __DIR__ . '/../Controllers/WorkoutSetController.php';
 
 use Slim\Factory\AppFactory;
 use Controllers\ExerciseController;
 use Controllers\UserController;
 use Controllers\WorkoutController;
+use Controllers\WorkoutSetController;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -25,7 +27,7 @@ $db =  new PDO("mysql:host=$configs->dbHost;dbname=$configs->dbName",
 $userController = new UserController($db);
 $exerciseController = new ExerciseController($db);
 $workoutController = new WorkoutController($db);
-
+$workoutSetController = new WorkoutSetController($db);
 // Routes
 $app->get('/users', [$userController, 'getUsers']);
 $app->get('/user/{id}', [$userController, 'getUser']);
@@ -44,110 +46,13 @@ $app->get('/workout/{id}', [$workoutController, 'getWorkout']);
 $app->post('/workout', [$workoutController, 'createWorkout']);
 $app->put('/workout/{id}', [$workoutController, 'updateWorkout']);
 $app->delete('/workout/{id}', [$workoutController, 'deleteWorkout']);
+
+$app->get('/workoutsets', [$workoutSetController, 'getWorkoutSets']);
+$app->get('/workoutset/{id}', [$workoutSetController, 'getWorkoutSet']);
+$app->post('/workoutset', [$workoutSetController, 'createWorkoutSet']);
+$app->put('/workoutset/{id}', [$workoutSetController, 'updateWorkoutSet']);
+$app->delete('/workoutset/{id}', [$workoutSetController, 'deleteWorkoutSet']);
+
 $app->run();
-
-/*
-//header('Content-Type: application/json');
-
-require_once __DIR__ . '/Controllers/ExerciseController.php';
-require_once __DIR__ . '/Controllers/UserController.php';
-
-use Config\Database;
-
-// Helpers
-function respond($data, $code = 200) {
-    http_response_code($code);
-    echo json_encode($data);
-    exit;
-}
-
-function get_input() {
-    // Try JSON input first
-    $input = file_get_contents('php://input');
-    $data = json_decode($input, true);
-    if (is_array($data)) {
-        return $data;
-    }
-    // Fallback to form data
-    return $_POST;
-}
-
-$database = new Database();
-$conn = $database->connect();
-
-// ROUTING
-$method = $_SERVER['REQUEST_METHOD'];
-$path = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
-    case 'workout_sets':
-    {
-        if ($method === 'POST') {
-            $data = get_input();
-            $stmt = $pdo->prepare("INSERT INTO workout_sets (workout_id, exercise_id, set_number, weight, repetitions) VALUES (:workout_id, :exercise_id, :set_number, :weight, :repetitions)");
-            $stmt->bindParam(':workout_id', $data['workout_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':exercise_id', $data['exercise_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':set_number', $data['set_number'], PDO::PARAM_INT);
-            $stmt->bindParam(':weight', $data['weight'], PDO::PARAM_INT);
-            $stmt->bindParam(':repetitions', $data['repetitions'], PDO::PARAM_INT);
-            $stmt->execute();
-            respond(['id' => $pdo->lastInsertId()], 201);
-        } else if ($method === 'GET') {
-            if (isset($path[1])) {
-                $stmt = $pdo->prepare("SELECT * FROM workout_sets WHERE workout_id = :workout_id");
-                $stmt->execute([':workout_id' => $path[1]]);
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                respond($result);
-            } else {
-                $stmt = $pdo->query("SELECT * FROM workout_sets");
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                respond($result);
-            }
-        } else if (($method === 'PUT' || $method === 'PATCH') && isset($path[1])) {
-            // Update set by id
-            $data = get_input();
-            $fields = [];
-            $params = [':id' => $path[1]];
-            if (isset($data['workout_id'])) {
-                $fields[] = "workout_id = :workout_id";
-                $params[':workout_id'] = $data['workout_id'];
-            }
-            if (isset($data['exercise_id'])) {
-                $fields[] = "exercise_id = :exercise_id";
-                $params[':exercise_id'] = $data['exercise_id'];
-            }
-            if (isset($data['set_number'])) {
-                $fields[] = "set_number = :set_number";
-                $params[':set_number'] = $data['set_number'];
-            }
-            if (isset($data['weight'])) {
-                $fields[] = "weight = :weight";
-                $params[':weight'] = $data['weight'];
-            }
-            if (isset($data['repetitions'])) {
-                $fields[] = "repetitions = :repetitions";
-                $params[':repetitions'] = $data['repetitions'];
-            }
-            if ($fields) {
-                $stmt = $pdo->prepare("UPDATE workout_sets SET ".implode(', ', $fields)." WHERE id = :id");
-                if ($stmt->execute($params))
-                    respond(['success' => true]);
-                else
-                    respond(['error' => 'Invalid workout'], 400);
-            } else {
-                respond(['error' => 'No fields to update'], 400);
-            }
-        } else if ($method === 'DELETE' && isset($path[1])) {
-            // Delete set by id
-            $stmt = $pdo->prepare("DELETE FROM workout_sets WHERE id = :id");
-            $stmt->execute([':id' => $path[1]]);
-            respond(['success' => true]);
-        }
-        break;
-    }
-    // 404 fallback
-    default:
-        respond(['error' => 'Not found'], 404);
-        break;
-}
-*/
 
 ?>
