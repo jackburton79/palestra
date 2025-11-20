@@ -1,4 +1,6 @@
 {
+    "name": "jackburton79/gym_tracker",
+    "description": "Basic gym tracker.",
     "require": {
         "slim/slim": "^4.15",
         "slim/psr7": "^1.8",
