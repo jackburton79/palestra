@@ -25,8 +25,8 @@ COPY ./src /var/www/html/
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-#RUN composer --working-dir=/var/www/html/public require slim/slim slim/psr7 slim/http
-RUN composer --working-dir=/var/www/html/public install
+#RUN composer --working-dir=public require slim/slim slim/psr7 slim/http
+RUN composer --working-dir=public install
 
 RUN sed -i s/DUMMYUSER/${db_user}/ /var/www/html/Config/config.php && \
 	sed -i s/DUMMYPASS/${db_password}/ /var/www/html/Config/config.php && \
