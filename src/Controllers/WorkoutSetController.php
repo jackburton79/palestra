@@ -23,7 +23,7 @@ class WorkoutSetController
     {
         $data = $request->getParsedBody();
         $this->model->create($data['workout_id'], $data['exercise_id'], $data['set_number'],
-            $data['weight'], $data['repetitions']);
+            $data['weight'], $data['repetitions'], $data['recovery_time']);
         return $response->withStatus(201)->write('WorkoutSet created');
     }
 
@@ -43,7 +43,7 @@ class WorkoutSetController
     {
         $data = $request->getParsedBody();
         $this->model->update($args['id'], data['workout_id'], $data['exercise_id'], $data['set_number'],
-            $data['weight'], $data['repetitions']);
+            $data['weight'], $data['repetitions'], $data['recovery_time']);
         return $response->write('WorkoutSet updated');
     }
 

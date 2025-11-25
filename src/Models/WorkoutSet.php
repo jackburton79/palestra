@@ -15,16 +15,17 @@ class WorkoutSet
         $this->conn = $conn;
     }
 
-    public function create($workout_id, $exercise_id, $set_number, $weight, $repetitions)
+    public function create($workout_id, $exercise_id, $set_number, $weight, $repetitions, $recovery_time)
     {
         
-        $stmt = $this->conn->prepare("INSERT INTO workoutsets (workout_id, exercise_id, set_number, weight, repetitions) ".
-                                    "VALUES (:workout_id, :exercise_id, :set_number, :weight, :repetitions)");
+        $stmt = $this->conn->prepare("INSERT INTO workoutsets (workout_id, exercise_id, set_number, weight, repetitions, recovery_time) ".
+                                    "VALUES (:workout_id, :exercise_id, :set_number, :weight, :repetitions, :recovery_time)");
         $stmt->bindParam(":workout_id", $workout_id, PDO::PARAM_STR);
         $stmt->bindParam(":exercise_id", $exercise_id, PDO::PARAM_STR);
         $stmt->bindParam(":set_number", $set_number, PDO::PARAM_STR);
         $stmt->bindParam(":weight", $weight, PDO::PARAM_STR);
         $stmt->bindParam(":repetitions", $repetitions, PDO::PARAM_STR);
+        $stmt->bindParam(":recovery_time", $recovery_time, PDO::PARAM_STR);
         if ($stmt->execute())
             return $this->conn->lastInsertId();
         else
@@ -45,7 +46,7 @@ class WorkoutSet
         return $result;
     }
 
-    public function update($id, $workout_id, $exercise_id, $set_number, $weight, $repetitions)
+    public function update($id, $workout_id, $exercise_id, $set_number, $weight, $repetitions, $recovery_time)
     {
         $fields = [];
         $params = [':id' => $id];
@@ -68,6 +69,10 @@ class WorkoutSet
         if (isset($repetitions)) {
             $fields[] = "repetitions = :repetitions";
             $params[':repetitions'] = $repetitions;
+        }
+        if (isset($recovery_time)) {
+            $fields[] = "recovery_time = :recovery_time";
+            $params[':recovery_time'] = $recovery_time;
         }
         $stmt = $this->conn->prepare("UPDATE workoutsets SET " . implode(', ', $fields) . " WHERE id = :id");
         return $stmt->execute($params);
