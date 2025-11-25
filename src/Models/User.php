@@ -40,7 +40,7 @@ class User
     
     public function readAll()
     {
-        $stmt = $this->conn->query("SELECT id, username, email, weight, height, created_at FROM users");
+        $stmt = $this->conn->query("SELECT id, name, email, weight, height, created_at FROM users");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     

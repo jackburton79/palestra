@@ -41,4 +41,5 @@ CREATE TABLE IF NOT EXISTS workout_sessions {
     user_id INT NOT NULL,
     date_start DATETIME NOT NULL,
     date_finish DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 };
