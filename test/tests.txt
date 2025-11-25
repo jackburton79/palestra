@@ -4,7 +4,7 @@
 ```bash
 curl -X POST http://localhost:8380/user \
      -H "Content-Type: application/json" \
-     -d '{"username":"testuser","email":"test@example.com","password":"secret123"}'
+     -d '{"name":"testuser","email":"test@example.com","weight":"80","height":"170"}'
 ```
 
 ## 2. Read User (GET)
@@ -21,7 +21,7 @@ curl -X GET http://localhost:8380/users
 ```bash
 curl -X PUT http://localhost:8380/user/1 \
      -H "Content-Type: application/json" \
-     -d '{"username":"updateduser","email":"updated@example.com","password":"newpass456"}'
+     -d '{"name":"updateduser","email":"updated@example.com","weight":"82", "height":"170"}'
 ```
 
 ## 5. Delete User (DELETE)
