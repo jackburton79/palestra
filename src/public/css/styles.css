@@ -1,0 +1,20 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 1rem;
+}
+.hidden {
+  display: none;
+}
+#loading {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+}
+#error {
+  color: red;
+  margin-top: 1rem;
+}
+button {
+  margin-top: 1rem;
+}

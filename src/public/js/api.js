@@ -1,28 +1,54 @@
-import { API_BASE } from './config.js';
+import { showLoading, showError, clearError } from "./utils.js";
 
-async function request(path, opts = {}) {
-  const url = path.startsWith('http') ? path : `${API_BASE}${path}`;
-  const headers = Object.assign({ 'Accept': 'application/json' }, opts.headers || {});
-  let body = opts.body;
-  if (body && typeof body === 'object') {
-    headers['Content-Type'] = 'application/json';
-    body = JSON.stringify(body);
-  }
-  const res = await fetch(url, Object.assign({}, opts, { headers, body }));
-  let data = null;
-  try { data = await res.json(); } catch (e) { /* ignore parse errors */ }
-  if (!res.ok) {
-    const errMsg = (data && data.error) ? data.error : (data && data.message) ? data.message : res.statusText;
-    const err = new Error(errMsg || `HTTP ${res.status}`);
-    err.status = res.status;
-    err.body = data;
+import { API_BASE } from "./config.js";
+
+async function request(path, options = {}) {
+  showLoading(true);
+  clearError();
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || `API error: ${res.status}`);
+    }
+    return data;
+  } catch (err) {
+    showError(err.message);
+    console.error("API request failed:", err);
     throw err;
+  } finally {
+    showLoading(false);
   }
-  return data;
 }
 
-export const listUsers = () => request('/users', { method: 'GET' });
-export const getUser = (id) => request(`/user/${encodeURIComponent(id)}`, { method: 'GET' });
-export const createUser = (payload) => request('/user', { method: 'POST', body: payload });
-export const updateUser = (id, payload) => request(`/user/${encodeURIComponent(id)}`, { method: 'PUT', body: payload });
-export const deleteUser = (id) => request(`/user/${encodeURIComponent(id)}`, { method: 'DELETE' });
+// Example API functions, adjust according to your API
+export async function getWorkouts() {
+  return request("workouts", { method: "GET" });
+}
+
+export async function getWorkoutSession(workoutId) {
+  return request("getSession", {
+    method: "POST",
+    body: JSON.stringify({ workout_id: workoutId }),
+  });
+}
+
+export async function createWorkout(name) {
+  return request("workout", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+}
+
+export async function deleteWorkout(workoutId) {
+  return request("workout", {
+    method: "DELETE",
+    body: JSON.stringify({ workout_id: workoutId }),
+  });
+}
+
+// Add more functions: addExercise, updateSession, etc.

@@ -1,144 +1,77 @@
-import * as api from './api.js';
+import * as api from "./api.js";
+import { state } from "./state.js";
+import * as ui from "./ui.js";
+import { showError } from "./utils.js";
 
-const msgEl = document.getElementById('message');
-const usersTbody = document.querySelector('#usersTable tbody');
-
-const createUserForm = document.getElementById('createUserForm');
-const createUsername = document.getElementById('createUsername');
-const createEmail = document.getElementById('createEmail');
-const createPassword = document.getElementById('createPassword');
-const createUserClear = document.getElementById('createUserClear');
-
-const refreshUsersBtn = document.getElementById('refreshUsersBtn');
-const filterInput = document.getElementById('filterUsers');
-
-const editUserForm = document.getElementById('editUserForm');
-const editUserId = document.getElementById('editUserId');
-const editUsername = document.getElementById('editUsername');
-const editEmail = document.getElementById('editEmail');
-const editPassword = document.getElementById('editPassword');
-const cancelUserEdit = document.getElementById('cancelUserEdit');
-
-function showMessage(text, ok = true) {
-  msgEl.textContent = text;
-  msgEl.className = 'message ' + (ok ? 'ok' : 'err');
-  msgEl.classList.remove('hide');
-  setTimeout(() => msgEl.classList.add('hide'), 5000);
-}
-
-function escapeHtml(s){
-  if (s === null || s === undefined) return '';
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
-}
-
-async function loadUsers() {
+async function loadWorkouts() {
   try {
-    const users = await api.listUsers();
-    renderUsers(users || []);
+    const data = await api.getWorkouts();
+    // assuming API returns { workouts: [...] }
+    state.workouts = data.workouts;
+    ui.renderWorkoutsList();
   } catch (err) {
-    showMessage('Error loading users: ' + (err.message || err), false);
-    usersTbody.innerHTML = '';
+    // error already shown by api.request
   }
 }
 
-function renderUsers(users) {
-  const q = (filterInput.value || '').toLowerCase().trim();
-  usersTbody.innerHTML = '';
-  users.forEach(u => {
-    if (q) {
-      const match = (u.username || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q);
-      if (!match) return;
+async function openWorkout(wk) {
+  state.currentWorkout = wk;
+  try {
+    const sessionData = await api.getWorkoutSession(wk.id);
+    state.session = sessionData;
+    showSection("session-section");
+    ui.renderSession();
+  } catch (err) {
+    // error handled above
+  }
+}
+
+async function deleteWorkout(wk) {
+  if (!confirm(`Delete workout "${wk.name}"?`)) return;
+  try {
+    await api.deleteWorkout(wk.id);
+    // reload list
+    await loadWorkouts();
+  } catch (err) {}
+}
+
+function showSection(sectionId) {
+  document.getElementById("workouts-section").hidden = sectionId !== "workouts-section";
+  document.getElementById("session-section").hidden = sectionId !== "session-section";
+}
+
+function setupEventListeners() {
+  window.addEventListener("openWorkout", (e) => {
+    openWorkout(e.detail);
+  });
+
+  window.addEventListener("deleteWorkout", (e) => {
+    deleteWorkout(e.detail);
+  });
+
+  document.getElementById("back-to-workouts-btn").addEventListener("click", () => {
+    showSection("workouts-section");
+    state.currentWorkout = null;
+    state.session = null;
+  });
+
+  document.getElementById("add-workout-btn").addEventListener("click", async () => {
+    const name = prompt("Workout name:");
+    if (name) {
+      try {
+        await api.createWorkout(name);
+        await loadWorkouts();
+      } catch (err) {
+        // error shown
+      }
     }
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${escapeHtml(u.id)}</td>
-      <td>${escapeHtml(u.username)}</td>
-      <td>${escapeHtml(u.email)}</td>
-      <td>${escapeHtml(u.created_at || '')}</td>
-      <td>
-        <button class="action view" data-id="${u.id}">View</button>
-        <button class="action edit" data-id="${u.id}">Edit</button>
-        <button class="action del" data-id="${u.id}">Delete</button>
-      </td>
-    `;
-    usersTbody.appendChild(tr);
   });
 }
 
-usersTbody.addEventListener('click', async (ev) => {
-  const btn = ev.target.closest('button');
-  if (!btn) return;
-  const id = btn.getAttribute('data-id');
-  if (btn.classList.contains('view')) {
-    try {
-      const u = await api.getUser(id);
-      showMessage(JSON.stringify(u));
-    } catch (err) {
-      showMessage('View error: ' + (err.message || err), false);
-    }
-  } else if (btn.classList.contains('edit')) {
-    try {
-      const u = await api.getUser(id);
-      editUserId.value = u.id;
-      editUsername.value = u.username || '';
-      editEmail.value = u.email || '';
-      editPassword.value = '';
-      editUserId.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } catch (err) {
-      showMessage('Load for edit failed: ' + (err.message || err), false);
-    }
-  } else if (btn.classList.contains('del')) {
-    if (!confirm('Delete user ' + id + '?')) return;
-    try {
-      await api.deleteUser(id);
-      showMessage('Deleted user ' + id);
-      await loadUsers();
-    } catch (err) {
-      showMessage('Delete failed: ' + (err.message || err), false);
-    }
-  }
-});
+async function init() {
+  setupEventListeners();
+  await loadWorkouts();
+  showSection("workouts-section");
+}
 
-createUserForm.addEventListener('submit', async (ev) => {
-  ev.preventDefault();
-  const payload = {
-    username: createUsername.value.trim(),
-    email: createEmail.value.trim(),
-    password: createPassword.value
-  };
-  try {
-    const res = await api.createUser(payload);
-    showMessage('Created user id ' + (res && res.id ? res.id : '?'));
-    createUserForm.reset();
-    await loadUsers();
-  } catch (err) {
-    showMessage('Create failed: ' + (err.message || err), false);
-  }
-});
-
-createUserClear.addEventListener('click', () => createUserForm.reset());
-refreshUsersBtn.addEventListener('click', loadUsers);
-filterInput.addEventListener('input', () => loadUsers());
-
-editUserForm.addEventListener('submit', async (ev) => {
-  ev.preventDefault();
-  const id = editUserId.value;
-  if (!id) return showMessage('Select a user to edit', false);
-  const payload = {};
-  if (editUsername.value) payload.username = editUsername.value.trim();
-  if (editEmail.value) payload.email = editEmail.value.trim();
-  if (editPassword.value) payload.password = editPassword.value;
-  try {
-    await api.updateUser(id, payload);
-    showMessage('Updated user ' + id);
-    editUserForm.reset();
-    await loadUsers();
-  } catch (err) {
-    showMessage('Update failed: ' + (err.message || err), false);
-  }
-});
-
-cancelUserEdit.addEventListener('click', () => editUserForm.reset());
-
-// initial load
-loadUsers();
+document.addEventListener("DOMContentLoaded", init);
