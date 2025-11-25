@@ -22,7 +22,7 @@ class UserController
     public function createUser(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
-        $this->model->create($data['username'], $data['email'], $data['password']);
+        $this->model->create($data['name'], $data['email'], $data['weight'], $data['height']);
         return $response->withStatus(201)->write('User created');
     }
     
@@ -41,7 +41,7 @@ class UserController
     public function updateUser(Request $request, Response $response, $args)
     {
         $data = $request->getParsedBody();
-        $this->model->update($args['id'], $data['name'], $data['email'], $data['password']);
+        $this->model->update($args['id'], $data['name'], $data['email'], $data['weight'], $data['height']);
         return $response->write('User updated');
     }
     

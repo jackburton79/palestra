@@ -17,13 +17,14 @@ class User
         $this->conn = $conn;
     }
 
-    public function create($name, $email, $password)
+    public function create($name, $email, $weight, $height)
     {
-        $stmt = $this->conn->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
-        $stmt->bindParam(":username", $name, PDO::PARAM_STR);
+        $stmt = $this->conn->prepare("INSERT INTO users (name, email, weight, height) " .
+                "VALUES (:name, :email, :weight, :height)");
+        $stmt->bindParam(":name", $name, PDO::PARAM_STR);
         $stmt->bindParam(":email", $email, PDO::PARAM_STR);
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt->bindParam(":password_hash", $password_hash, PDO::PARAM_STR);
+        $stmt->bindParam(":weight", $weight, PDO::PARAM_STR);
+        $stmt->bindParam(":height", $height, PDO::PARAM_STR);
         if ($stmt->execute())
             return $this->conn->lastInsertId();
         else
@@ -32,32 +33,36 @@ class User
     
     public function read($id)
     {
-        $stmt = $this->conn->prepare("SELECT id, username, email, created_at FROM users WHERE id = :id");
+        $stmt = $this->conn->prepare("SELECT id, name, email, weight, height, created_at FROM users WHERE id = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
     public function readAll()
     {
-        $stmt = $this->conn->query("SELECT id, username, email, created_at FROM users");
+        $stmt = $this->conn->query("SELECT id, username, email, weight, height, created_at FROM users");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function update($id, $name, $email, $password)
+    public function update($id, $name, $email, $weight, $height)
     {
         $fields = [];
         $params = [':id' => $id];
         if (isset($name)) {
-            $fields[] = "username = :username";
-            $params[':username'] = $name;
+            $fields[] = "name = :name";
+            $params[':name'] = $name;
         }
         if (isset($email)) {
             $fields[] = "email = :email";
             $params[':email'] = $email;
         }
-        if (isset($password)) {
-            $fields[] = "password_hash = :password_hash";
-            $params[':password_hash'] = $password;
+        if (isset($weight)) {
+            $fields[] = "weight = :weight";
+            $params[':weight'] = $weight;
+        }
+        if (isset($height)) {
+            $fields[] = "height = :height";
+            $params[':height'] = $height;
         }
         $stmt = $this->conn->prepare("UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id");
         return $stmt->execute($params);
